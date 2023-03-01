@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/db');
+const cors = require('cors');
 
 // Use Node's default promise instead of Mongoose's promise library
 mongoose.Promise = global.Promise;
@@ -19,6 +20,7 @@ mongoose.connect(
 
 // Instantiate express
 const app = express();
+app.use(cors());
 
 // Set public folder using built-in express.static middleware
 app.use(express.static('public'));
