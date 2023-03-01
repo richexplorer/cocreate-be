@@ -5,7 +5,7 @@ const Proposal = require('../models/proposal');
 const Task = require('../models/task');
 const Submission = require('../models/submission');
 const SubmissionVoteMapping = require('../models/submissionVoteMapping');
-const ProposalVoteMapping = require('../models/proposalVoteMapping');
+const ProposalVoteMapping = require('../models/proposalVoteMappingg');
 
 const { v1: uuidv1, v4: uuidv4 } = require('uuid');
 
@@ -103,7 +103,7 @@ class ProposalFunctions {
                 return {success: false, error: "Can not find user with the provided id"}
             }
 
-            
+
 
             return { success:true, data: { project_data : project, proposals_data: proposals }};
         } catch (error) {
