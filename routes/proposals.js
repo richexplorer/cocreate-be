@@ -5,7 +5,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const config = require('../config/db');
 
-const ProposalFunctions = require("../controllers/proposalFunctions");
+const ProposalFunctions = require("../controllers/ProposalFunctions");
 const proposalFunctions = new ProposalFunctions();
 
 router.get("/entities/:entityId/projects/:projectId/proposals", async function (req, res) {
