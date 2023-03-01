@@ -1,0 +1,21 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      # - yum install -y gcc-c++ cairo-devel libjpeg-turbo-devel pango-devel giflib-devel
+      # - npm install canvas
+      # - PYTHON=python2 amazon-linux-extras install epel -y
+      # - yum install -y amazon-linux-extras
+      # - ln -s /lib/python2.7/site-packages/amazon_linux_extras ~/.pyenv/versions/3.9.5/lib/python3.9/site-packages/
+  pre_build:
+    commands:
+      - npm install
+      - npm config set strict-ssl false
+  build:
+    commands:
+      - npm run build
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: no
+  base-directory: ./
