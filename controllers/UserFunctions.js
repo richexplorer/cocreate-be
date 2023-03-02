@@ -10,7 +10,7 @@ const { v1: uuidv1, v4: uuidv4 } = require('uuid');
 
 class UserFunctions {
     async addOrUpdateUserForEntity(req) {
-        console.log("UserFunctions:createOrUpdateEntity ");
+        console.log("UserFunctions:createOrUpdateUser ");
         try {
             const { discordId, address, emailId } = req.body;
             const { entityId, userId } = req.params;
@@ -45,14 +45,14 @@ class UserFunctions {
 
             return { success:true, data: id};
         } catch (error) {
-            console.log("UserFunctions:createOrUpdateEntity: Catch block");
+            console.log("UserFunctions:createOrUpdateUser: Catch block");
             console.log(error);
             return {success:false, error: "Internal Server Error. Please contact Help Center in Discord."};
         }
     }
 
     async getAllRegisteredUsers(req) {
-        console.log("UserFunctions:getAllEntities ");
+        console.log("UserFunctions:getAllRegisteredUsers ");
         try {
             const { entityId } = req.params;
 
@@ -60,7 +60,7 @@ class UserFunctions {
 
             return { success:true, data: users};
         } catch (error) {
-            console.log("UserFunctions:getAllEntities: Catch block");
+            console.log("UserFunctions:getAllRegisteredUsers: Catch block");
             console.log(error);
             return {success:false, error: "Internal Server Error. Please contact Help Center in Discord."};
         }
