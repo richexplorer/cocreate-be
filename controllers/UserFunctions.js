@@ -66,6 +66,21 @@ class UserFunctions {
         }
     }
 
+    async getUserForDiscordId(req) {
+        console.log("UserFunctions:getUserForDiscordId ");
+        try {
+            const { entityId, discordId } = req.params;
+
+            const user = await User.findOne({entityId: entityId, discordId: discordId });
+
+            return { success:true, data: user ? user.userId : null };
+        } catch (error) {
+            console.log("UserFunctions:getUserForDiscordId: Catch block");
+            console.log(error);
+            return {success:false, error: "Internal Server Error. Please contact Help Center in Discord."};
+        }
+    }
+
     async addEthWalletForUser(req) {
         console.log("UserFunctions:addEthWalletForUser ");
         try {

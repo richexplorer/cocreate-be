@@ -19,6 +19,17 @@ router.get("/entities/:entityId/users", async function (req, res) {
   }
 });
 
+router.get("/entities/:entityId/users/discord/:discordId", async function (req, res) {
+  try {
+    var data = await userFunctions.getUserForDiscordId(req);
+    res.json(data);
+  } catch (error) {
+    console.log("API Endpoint error");
+    console.log(error);
+    res.json({ success: false, error: "Error Occured" });
+  }
+});
+
 router.post("/entities/:entityId/users/:userId/update", async function (req, res) {
     try {
       var data = await userFunctions.addOrUpdateUserForEntity(req);
