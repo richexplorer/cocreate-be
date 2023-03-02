@@ -74,6 +74,40 @@ router.get("/entities/:entityId/projects/:projectId/proposals/:proposalId/votes"
   }
 });
 
+router.post("/entities/:entityId/projects/:projectId/proposals/:proposalId/execute", async function (req, res) {
+  try {
+    var data = await proposalFunctions.executeProposal(req);
+    res.json(data);
+  } catch (error) {
+    console.log("API Endpoint error");
+    console.log(error);
+    res.json({ success: false, error: "Error Occured" });
+  }
+});
+
+router.get("/entities/:entityId/projects/:projectId/proposals/:proposalId/tasks", async function (req, res) {
+  try {
+    var data = await proposalFunctions.getProposalTasks(req);
+    res.json(data);
+  } catch (error) {
+    console.log("API Endpoint error");
+    console.log(error);
+    res.json({ success: false, error: "Error Occured" });
+  }
+});
+
+router.post("/entities/:entityId/projects/:projectId/proposals/:proposalId/tasks", async function (req, res) {
+  try {
+    var data = await proposalFunctions.createNewTaskForProposal(req);
+    res.json(data);
+  } catch (error) {
+    console.log("API Endpoint error");
+    console.log(error);
+    res.json({ success: false, error: "Error Occured" });
+  }
+});
+
+
 // router.get('/test', passport.authenticate('jwt', { session: false }), (req, res) => {
 //   res.json({ user: req.user });
 // })

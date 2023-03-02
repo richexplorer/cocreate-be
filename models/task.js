@@ -4,11 +4,11 @@ const TaskSchema = new mongoose.Schema({
     entityId: { type: String, required: true },
     taskId: { type: String, required: true },
     parentProposalId: { type: String, required: true },
-    assignee: { type: String, required: true }, // userId
+    assignee: { type: String }, // userId
 
     title: { type: String },
     description: { type: String },
-    eta: { type: String },
+    eta: { type: Date },
     minXP: { type: Number, default: 0 },
     status: { type: String, enum : [
         'UNASSIGNED', 
@@ -17,7 +17,7 @@ const TaskSchema = new mongoose.Schema({
         'IN_REVIEW',
         'COMPLETED',
         'DISCARDED',
-    ]},
+    ], default: 'UNASSIGNED'},
     createdAt: {type: Date, default: Date.now()}
 });
 

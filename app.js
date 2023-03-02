@@ -39,6 +39,7 @@ app.use('/api', require('./routes/projects'));
 app.use('/api', require('./routes/entities'));
 app.use('/api', require('./routes/proposals'));
 app.use('/api', require('./routes/users'));
+app.use('/api', require('./routes/taskSubmissions'));
 
 // Use express's default error handling middleware
 app.use(function (err, req, res, next) {

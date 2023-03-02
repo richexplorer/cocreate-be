@@ -4,7 +4,7 @@
   "description": "A RESTful back-end login starter kit using Node.js, Express.js, and MongoDB",
   "main": "app.js",
   "scripts": {
-    "start": "node app",
+    "start": "nodemon app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ceferino Jose II",
