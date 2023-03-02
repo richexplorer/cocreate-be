@@ -30,6 +30,17 @@ router.get("/entities/:entityId/projects/:projectId", async function (req, res) 
     }
 });
 
+router.get("/entities/:entityId/projects/discord/:discordChannelId", async function (req, res) {
+  try {
+    var data = await projectFunctions.getProjectDetailsWithDiscordChannelId(req);
+    res.json(data);
+  } catch (error) {
+    console.log("API Endpoint error");
+    console.log(error);
+    res.json({ success: false, error: "Error Occured" });
+  }
+});
+
 router.post("/entities/:entityId/projects", async function (req, res) {
     try {
       var data = await projectFunctions.createOrUpdateProject(req);

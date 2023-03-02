@@ -13,7 +13,7 @@ class ProjectFunctions {
     async createOrUpdateProject(req) {
         console.log("ProjectFunctions:createOrUpdateProject ");
         try {
-            const { title, description, imageLink, links, expiresAt, authors } = req.body;
+            const { title, description, imageLink, links, expiresAt, authors, discordWebhookURL, discordChannelId } = req.body;
             const { entityId, projectId } = req.params;
 
             const entity = await Entity.findOne({ entityId: entityId });
@@ -30,11 +30,15 @@ class ProjectFunctions {
                 imageLink: imageLink,
                 links: links,
                 expiresAt: expiresAt,
-                authors: authors
+                authors: authors,
+                discordWebhookURL: discordWebhookURL,
+                discordChannelId: discordChannelId
             }, {
                 upsert: true, 
                 setDefaultsOnInsert:true
             });
+
+            await this._postNewProjectOnDiscord(entityId, projectId);
 
             return { success:true, data: id};
         } catch (error) {
@@ -80,6 +84,31 @@ class ProjectFunctions {
             return { success:true, data: { project_data : project, proposals_data: proposals }};
         } catch (error) {
             console.log("ProjectFunctions:getProjectDetails: Catch block");
+            console.log(error);
+            return {success:false, error: "Internal Server Error. Please contact Help Center in Discord."};
+        }
+    }
+
+    async getProjectDetailsWithDiscordChannelId(req) {
+        console.log("ProjectFunctions:getProjectDetailsWithDiscordChannelId ");
+        try {
+            const { entityId, discordChannelId } = req.params;
+
+            const entity = await Entity.findOne({ entityId: entityId });
+            if (!entity) {
+                return {success: false, error: "Can not find entity with the provided id"}
+            }
+
+            const project = await Project.findOne({entityId: entityId, discordChannelId: discordChannelId});
+            if (!project) {
+                return {success: false, error: "Can not find project with the provided id"}  
+            }
+
+            const proposals = await Proposal.find({ projectId: project.projectId });
+
+            return { success:true, data: { project_data : project, proposals_data: proposals }};
+        } catch (error) {
+            console.log("ProjectFunctions:getProjectDetailsWithDiscordChannelId: Catch block");
             console.log(error);
             return {success:false, error: "Internal Server Error. Please contact Help Center in Discord."};
         }
@@ -167,6 +196,43 @@ class ProjectFunctions {
             console.log("ProjectFunctions:getProjectUsers: Catch block");
             console.log(error);
             return {success:false, error: "Internal Server Error. Please contact Help Center in Discord."};
+        }
+    }
+
+    // PRIVATE FUNCTIONS
+
+    async _postNewProjectOnDiscord(entityId, projectId) {
+        console.log("ProjectFunctions:_postNewProjectOnDiscord: " + projectId);
+        try {
+            var project = await Project.findOne({entityId: entityId, projectId: projectId});
+            if (!project || !project.discordQuestWebhookURL) {
+                console.log("ProjectFunctions:_postNewProjectOnDiscord: Error: Project not posted on discord as its not found in the DB, id = " + projectId);
+                return false;
+            }
+
+            let params = {
+                username: 'Co-Create Bot',
+                avatar_url: 'http://cocreate.blogs.lincoln.ac.uk/files/2016/11/Co-Create-Logo1.png',
+                embeds: [{
+                    title: "New Project Created - " + project.title,
+                    description: project.description + ".. This channel will be used to create proposals about the above and vote on them. Lets get it done!"
+                }]
+            };
+    
+            var response = await axios({
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: JSON.stringify(params),
+                url: project.discordQuestWebhookURL,
+            });
+
+            return true;
+        } catch (err) {
+            console.log("ProjectFunctions:_postNewProjectOnDiscord: Internal Server Error");
+            console.log(err);
+            return false;
         }
     }
 }

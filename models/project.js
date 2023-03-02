@@ -8,6 +8,8 @@ const ProjectSchema = new mongoose.Schema({
     title: { type: String },
     description: { type: String },
     imageLink: { type: String },
+    discordWebhookURL: { type: String },
+    discordChannelId: { type: String },
     links: { type: mongoose.Schema.Types.Mixed } ,
     expiresAt: { type: String },
     status: { type: String, enum : [
