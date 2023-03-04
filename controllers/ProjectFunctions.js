@@ -206,7 +206,7 @@ class ProjectFunctions {
         console.log("ProjectFunctions:_postNewProjectOnDiscord: " + projectId);
         try {
             var project = await Project.findOne({entityId: entityId, projectId: projectId});
-            if (!project || !project.discordQuestWebhookURL) {
+            if (!project || !project.discordWebhookURL) {
                 console.log("ProjectFunctions:_postNewProjectOnDiscord: Error: Project not posted on discord as its not found in the DB, id = " + projectId);
                 return false;
             }
