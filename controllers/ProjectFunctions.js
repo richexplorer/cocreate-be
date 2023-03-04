@@ -13,7 +13,7 @@ class ProjectFunctions {
     async createOrUpdateProject(req) {
         console.log("ProjectFunctions:createOrUpdateProject ");
         try {
-            const { title, description, imageLink, links, expiresAt, authors, discordWebhookURL, discordChannelId } = req.body;
+            const { title, description, imageLink, links, expiresAt, authors, discordWebhookURL, discordChannelId, discordChannelName } = req.body;
             const { entityId, projectId } = req.params;
 
             const entity = await Entity.findOne({ entityId: entityId });
@@ -32,7 +32,8 @@ class ProjectFunctions {
                 expiresAt: expiresAt,
                 authors: authors,
                 discordWebhookURL: discordWebhookURL,
-                discordChannelId: discordChannelId
+                discordChannelId: discordChannelId,
+                discordChannelName: discordChannelName
             }, {
                 upsert: true, 
                 setDefaultsOnInsert:true

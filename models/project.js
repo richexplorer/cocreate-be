@@ -10,6 +10,7 @@ const ProjectSchema = new mongoose.Schema({
     imageLink: { type: String },
     discordWebhookURL: { type: String },
     discordChannelId: { type: String },
+    discordChannelName: { type: String },
     links: { type: mongoose.Schema.Types.Mixed } ,
     expiresAt: { type: String },
     status: { type: String, enum : [
