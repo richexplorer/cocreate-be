@@ -227,7 +227,7 @@ class ProjectFunctions {
                     'Content-Type': 'application/json',
                 },
                 data: JSON.stringify(params),
-                url: project.discordQuestWebhookURL,
+                url: project.discordWebhookURL,
             });
 
             return true;

@@ -70,7 +70,6 @@ class UserFunctions {
         console.log("UserFunctions:getUserForDiscordId ");
         try {
             const { entityId, discordId } = req.params;
-
             const user = await User.findOne({entityId: entityId, discordId: discordId });
 
             return { success:true, data: user ? user.userId : null };
