@@ -39,7 +39,7 @@ class ProjectFunctions {
                 setDefaultsOnInsert:true
             });
 
-            await this._postNewProjectOnDiscord(entityId, projectId);
+            await this._postNewProjectOnDiscord(entityId, id);
 
             return { success:true, data: id};
         } catch (error) {
