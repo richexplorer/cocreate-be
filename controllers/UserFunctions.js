@@ -155,9 +155,15 @@ class UserFunctions {
           const { username } = response.data;
 
          // discordId is discord username
-          const user = await User.findOne({ entityId: entityId, discordId: username });
-            if (!user) {
-                return {success: false, error: "Can not find user with the provided id"}
+          var user = await User.findOne({ entityId: entityId, discordId: username });
+          if (!user) {
+                userId = "u-" +  uuidv4();
+                user = new User({
+                    userId: userId,
+                    discordId: username,
+                });
+                await user.save();
+                user = await User.findOne({ entityId: entityId, discordId: username });
             }
 
             var addresses = user.addresses ? user.addresses : [];
