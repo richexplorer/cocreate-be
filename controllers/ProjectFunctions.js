@@ -129,6 +129,7 @@ class ProjectFunctions {
                 user = new User({
                     userId: userId,
                     discordId: userDiscordId,
+                    entityId: entityId
                 });
                 await user.save();
             }

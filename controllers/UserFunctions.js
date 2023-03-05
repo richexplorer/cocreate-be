@@ -156,11 +156,13 @@ class UserFunctions {
 
          // discordId is discord username
           var user = await User.findOne({ entityId: entityId, discordId: username });
+          var userId;
           if (!user) {
                 userId = "u-" +  uuidv4();
                 user = new User({
                     userId: userId,
                     discordId: username,
+                    entityId: entityId
                 });
                 await user.save();
                 user = await User.findOne({ entityId: entityId, discordId: username });
