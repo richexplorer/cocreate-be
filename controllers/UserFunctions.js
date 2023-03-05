@@ -7,6 +7,8 @@ const Submission = require('../models/submission');
 const SubmissionVoteMapping = require('../models/submissionVoteMapping');
 const axios = require('axios');
 const qs = require('qs');
+const GeneralFunctions = require('../controllers/generalFunctions');
+var generalFunctions = new GeneralFunctions();
 
 const { v1: uuidv1, v4: uuidv4 } = require('uuid');
 
@@ -154,9 +156,11 @@ class UserFunctions {
 
           const { username } = response.data;
 
+          console.log(username);
+
          // discordId is discord username
           var user = await User.findOne({ entityId: entityId, discordId: username });
-          var userId;
+          var userId = user ? user.userId : null;
           if (!user) {
                 userId = "u-" +  uuidv4();
                 user = new User({
@@ -173,6 +177,7 @@ class UserFunctions {
                 // Check if the address is already present
                 for (var add in addresses) {
                     if (addresses[add].address == address) {
+                        await generalFunctions.mintDynamicNFT(userId, entityId);
                         return {success: false, error: "User already connected to this eth address"}
                     }
                 }
@@ -182,6 +187,8 @@ class UserFunctions {
             }
 
             await User.findOneAndUpdate({ entityId: entityId, discordId: username }, {addresses: addresses});
+            
+            await generalFunctions.mintDynamicNFT(userId, entityId);
 
             return {success: true};
         } catch (error) {

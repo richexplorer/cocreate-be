@@ -10,6 +10,8 @@ const ProjectContributer = require('../models/projectContributer');
 const axios = require('axios');
 
 const { v1: uuidv1, v4: uuidv4 } = require('uuid');
+const GeneralFunctions = require('./generalFunctions');
+const generalFunctions = new GeneralFunctions();
 
 class ProposalFunctions {
     async createOrUpdateProposal(req) {
@@ -41,6 +43,9 @@ class ProposalFunctions {
             });
 
             await this._postNewProposalOnDiscord(entityId, projectId, id);
+            if (authors.count > 0) {
+                await generalFunctions.addXPforUser(50, authors[0], entityId);
+            }
 
             return { success:true, data: id};
         } catch (error) {
@@ -123,6 +128,8 @@ class ProposalFunctions {
                 voteValue: value
             }, { upsert: true, setDefaultsOnInsert: true });
 
+            await generalFunctions.addXPforUser(10, userId, entityId);
+
             return { success:true};
         } catch (error) {
             console.log("ProposalFunctions:voteOnProposal: Catch block");
@@ -183,6 +190,8 @@ class ProposalFunctions {
                 await taskDoc.save();
             }
 
+            await generalFunctions.addXPforUser(50, userId, entityId);
+
             return { success:true };
         } catch (error) {
             console.log("ProposalFunctions:executeProposal: Catch block");
@@ -219,6 +228,8 @@ class ProposalFunctions {
                 status: assignee ? 'NOT_STARTED' : 'UNASSIGNED'
             });
             await taskDoc.save();
+
+            await generalFunctions.addXPforUser(20, userId, entityId);
 
             return { success:true, id: taskId };
         } catch (error) {
