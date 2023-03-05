@@ -292,7 +292,11 @@ class ProposalFunctions {
 
             console.log(response);
 
-            // await this._addReactionsForProposal(project.discordWebhookURL, response.id, ['👍', '👎']);
+            try {
+                await this._addReactionsForProposal(project.discordWebhookURL, response.data.id, ['👍', '👎']);
+            } catch (error) {
+                console.log(error);
+            }
 
             return true;
         } catch (err) {
