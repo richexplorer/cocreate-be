@@ -291,6 +291,7 @@ class ProposalFunctions {
             });
 
             console.log(response);
+            
 
             try {
                 await this._addReactionsForProposal(project.discordWebhookURL, response.data.id, ['👍', '👎']);
