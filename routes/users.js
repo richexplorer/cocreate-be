@@ -63,4 +63,16 @@ router.post("/entities/:entityId/users/:userId/connect-wallet", async function (
     }
 });
 
+router.post("/entities/:entityId/users/connect-discord-and-wallet", async function (req, res) {
+  try {
+    var data = await userFunctions.connectDiscordAndEthWallet(req);
+    res.json(data);
+  } catch (error) {
+    console.log("API Endpoint error");
+    console.log(error);
+    res.json({ success: false, error: "Error Occured" });
+  }
+});
+
+
 module.exports = router;

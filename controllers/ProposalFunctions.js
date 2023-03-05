@@ -7,6 +7,7 @@ const Submission = require('../models/submission');
 const SubmissionVoteMapping = require('../models/submissionVoteMapping');
 const ProposalVoteMapping = require('../models/proposalVoteMappingg');
 const ProjectContributer = require('../models/projectContributer');
+const axios = require('axios');
 
 const { v1: uuidv1, v4: uuidv4 } = require('uuid');
 
@@ -38,6 +39,8 @@ class ProposalFunctions {
                 upsert: true, 
                 setDefaultsOnInsert:true
             });
+
+            await this._postNewProposalOnDiscord(entityId, projectId, id);
 
             return { success:true, data: id};
         } catch (error) {
@@ -244,6 +247,65 @@ class ProposalFunctions {
             return {success:false, error: "Internal Server Error. Please contact Help Center in Discord."};
         }
     }
+
+    // PRIVATE FUNCTIONS
+
+    async _postNewProposalOnDiscord(entityId, projectId, proposalId) {
+        console.log("ProjectFunctions:_postNewProposalOnDiscord: " + proposalId);
+        try {
+            var project = await Project.findOne({entityId: entityId, projectId: projectId});
+            if (!project || !project.discordWebhookURL) {
+                console.log("ProjectFunctions:_postNewProposalOnDiscord: Error: Project not posted on discord as its not found in the DB, id = " + projectId);
+                return false;
+            }
+
+            const proposal = await Proposal.findOne({entityId: entityId, projectId: projectId, proposalId: proposalId});
+
+            let params = {
+                username: 'Co-Create Bot',
+                avatar_url: 'http://cocreate.blogs.lincoln.ac.uk/files/2016/11/Co-Create-Logo1.png',
+                embeds: [{
+                    title: "New Proposal - " + proposal.title,
+                    description: proposal.description
+                }]
+            };
+    
+            var response = await axios({
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: JSON.stringify(params),
+                url: project.discordWebhookURL,
+            });
+
+            console.log(response);
+
+            // await this._addReactionsForProposal(project.discordWebhookURL, response.id, ['👍', '👎']);
+
+            return true;
+        } catch (err) {
+            console.log("ProjectFunctions:_postNewProposalOnDiscord: Internal Server Error");
+            console.log(err);
+            return false;
+        }
+    }
+
+    async _addReactionsForProposal(webhookUrl, messageId, emojis) {
+        emojis.forEach((emoji) => {
+          axios.post(`${webhookUrl}/messages/${messageId}/reactions/${encodeURIComponent(emoji)}/@me`, null, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then((response) => {
+              console.log(`Reaction ${emoji} added:`, response.data);
+            })
+            .catch((error) => {
+              console.error(`Error adding reaction ${emoji}:`, error);
+            });
+        });
+      }
 }
 
 module.exports = ProposalFunctions;

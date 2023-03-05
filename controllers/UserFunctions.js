@@ -5,6 +5,8 @@ const Proposal = require('../models/proposal');
 const Task = require('../models/task');
 const Submission = require('../models/submission');
 const SubmissionVoteMapping = require('../models/submissionVoteMapping');
+const axios = require('axios');
+const qs = require('qs');
 
 const { v1: uuidv1, v4: uuidv4 } = require('uuid');
 
@@ -110,6 +112,72 @@ class UserFunctions {
             return { success:true };
         } catch (error) {
             console.log("UserFunctions:addEthWalletForUser: Catch block");
+            console.log(error);
+            return {success:false, error: "Internal Server Error. Please contact Help Center in Discord."};
+        }
+    }
+
+    async connectDiscordAndEthWallet(req) {
+        console.log("UserFunctions:connectEthAddressWithDiscordId ");
+        try {
+          const { discordCode, address, entityId } = req.body;
+
+          if (!discordCode || !address) {
+            return {success: false, error: "Eth address or the discord code not found"};
+          }
+
+          const accessTokenResponse = await axios({
+            method: "post",
+            url: `https://discord.com/api/oauth2/token`,
+            data: qs.stringify({
+              client_id: "1080238151404093510",
+              client_secret: "JKnL2R9G4ELT-8sMZHPabuzoML03di22",
+              grant_type: "authorization_code",
+              code: discordCode,
+              redirect_uri: "http://localhost:3000/",
+            }),
+            headers: {
+              "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+            },
+          });
+
+          let userDetails = {
+            method: "get",
+            url: "https://discord.com/api/users/@me",
+            headers: {
+              Authorization: `Bearer ${accessTokenResponse.data.access_token}`,
+            },
+          };
+
+          const response = await axios(userDetails);
+          console.log(response);
+
+          const { username } = response.data;
+
+         // discordId is discord username
+          const user = await User.findOne({ entityId: entityId, discordId: username });
+            if (!user) {
+                return {success: false, error: "Can not find user with the provided id"}
+            }
+
+            var addresses = user.addresses ? user.addresses : [];
+            if (addresses) {
+                // Check if the address is already present
+                for (var add in addresses) {
+                    if (addresses[add].address == address) {
+                        return {success: false, error: "User already connected to this eth address"}
+                    }
+                }
+
+                const entry = { address: address, chain: "ETH" };
+                addresses.push(entry);
+            }
+
+            await User.findOneAndUpdate({ entityId: entityId, discordId: username }, {addresses: addresses});
+
+            return {success: true};
+        } catch (error) {
+            console.log("UserFunctions:connectEthAddressWithDiscordId: Catch block");
             console.log(error);
             return {success:false, error: "Internal Server Error. Please contact Help Center in Discord."};
         }
