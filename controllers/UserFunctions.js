@@ -136,7 +136,7 @@ class UserFunctions {
               client_secret: "JKnL2R9G4ELT-8sMZHPabuzoML03di22",
               grant_type: "authorization_code",
               code: discordCode,
-              redirect_uri: "http://localhost:3000/",
+              redirect_uri: "https://master.d1os0zrv3odqp4.amplifyapp.com/",
             }),
             headers: {
               "content-type": "application/x-www-form-urlencoded;charset=utf-8",
